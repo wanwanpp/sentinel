@@ -33,7 +33,7 @@ public class WebMvcTestController {
     @GetMapping("/hello")
     @ResponseBody
     public String apiHello() {
-        doBusiness();
+//        doBusiness();
         return "Hello!";
     }
 

@@ -17,13 +17,18 @@ package com.alibaba.csp.sentinel.demo.spring.webmvc.config;
 
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebInterceptor;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.SentinelWebTotalInterceptor;
+import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.DefaultBlockExceptionHandler;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcConfig;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.config.SentinelWebMvcTotalConfig;
 
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Config sentinel interceptor
@@ -49,7 +54,10 @@ public class InterceptorConfig implements WebMvcConfigurer {
         // config.setBlockExceptionHandler((request, response, e) -> { throw e; });
 
         // Use the default handler.
-        config.setBlockExceptionHandler(new DefaultBlockExceptionHandler());
+//        config.setBlockExceptionHandler(new DefaultBlockExceptionHandler());
+        config.setBlockExceptionHandler((request, response, e) -> {
+            throw e;
+        });
 
         // Custom configuration if necessary
         config.setHttpMethodSpecify(true);
@@ -67,6 +75,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
 
     private void addSpringMvcTotalInterceptor(InterceptorRegistry registry) {
         //Config
+//        设置总流量请求，该服务的所有接口，因为用了同一个resource
         SentinelWebMvcTotalConfig config = new SentinelWebMvcTotalConfig();
 
         //Custom configuration if necessary
