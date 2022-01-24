@@ -25,6 +25,7 @@ import com.alibaba.csp.sentinel.spi.SpiLoader;
 
 /**
  * Load registered init functions and execute in order.
+ * 初始化执行器
  *
  * @author Eric Zhao
  */

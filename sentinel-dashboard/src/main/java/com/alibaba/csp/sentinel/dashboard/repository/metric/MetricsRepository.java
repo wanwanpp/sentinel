@@ -19,6 +19,7 @@ import java.util.List;
 
 /**
  * Repository interface for aggregated metrics data.
+ * 用于存储监控指标数据
  *
  * @param <T> type of metrics
  * @author Eric Zhao

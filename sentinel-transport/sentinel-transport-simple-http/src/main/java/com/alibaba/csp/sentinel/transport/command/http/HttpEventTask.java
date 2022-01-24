@@ -42,6 +42,7 @@ import java.util.Map;
 
 /**
  * The task handles incoming command request in HTTP protocol.
+ * 调用handler 处理http请求
  *
  * @author youji.zj
  * @author Eric Zhao

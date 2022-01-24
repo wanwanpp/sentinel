@@ -86,6 +86,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Communicate with Sentinel client.
+ * 与sentinel client通信
  *
  * @author leyou
  */

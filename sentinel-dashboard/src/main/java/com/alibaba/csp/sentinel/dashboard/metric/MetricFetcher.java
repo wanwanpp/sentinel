@@ -63,6 +63,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Fetch metric of machines.
+ * 定时（每秒）拉取所有client的监控信息
  *
  * @author leyou
  */
@@ -72,7 +73,7 @@ public class MetricFetcher {
     public static final String NO_METRICS = "No metrics";
     private static final int HTTP_OK = 200;
     private static final long MAX_LAST_FETCH_INTERVAL_MS = 1000 * 15;
-    private static final long FETCH_INTERVAL_SECOND = 6;
+    private static final long FETCH_INTERVAL_SECOND = 6; // 6秒拉一次
     private static final Charset DEFAULT_CHARSET = Charset.forName(SentinelConfig.charset());
     private final static String METRIC_URL_PATH = "metric";
     private static Logger logger = LoggerFactory.getLogger(MetricFetcher.class);
@@ -193,7 +194,9 @@ public class MetricFetcher {
         long start = System.currentTimeMillis();
         /** app_resource_timeSecond -> metric */
         final Map<String, MetricEntity> metricMap = new ConcurrentHashMap<>(16);
+        // 使用countdownlatch，遍历完client后才继续执行
         final CountDownLatch latch = new CountDownLatch(machines.size());
+        // 遍历client，去拉取每个节点的监控信息
         for (final MachineInfo machine : machines) {
             // auto remove
             if (machine.isDead()) {

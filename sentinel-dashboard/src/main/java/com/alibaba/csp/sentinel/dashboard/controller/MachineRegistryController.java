@@ -42,6 +42,7 @@ public class MachineRegistryController {
 
     @ResponseBody
     @RequestMapping("/machine")
+    // 心跳包会请求此地址
     public Result<?> receiveHeartBeat(String app,
                                       @RequestParam(value = "app_type", required = false, defaultValue = "0")
                                           Integer appType, Long version, String v, String hostname, String ip,
@@ -76,6 +77,7 @@ public class MachineRegistryController {
             machineInfo.setIp(ip);
             machineInfo.setPort(port);
             machineInfo.setHeartbeatVersion(version);
+            // 心跳时间是需要更新的
             machineInfo.setLastHeartbeat(System.currentTimeMillis());
             machineInfo.setVersion(sentinelVersion);
             appManagement.addMachine(machineInfo);

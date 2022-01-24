@@ -42,6 +42,8 @@ import com.alibaba.csp.sentinel.util.StringUtil;
 
 /***
  * The simple command center provides service to exchange information.
+ * 用socket来处理http请求
+ * 控制台应用引用了simple-http包，启动时也会初始化此类
  *
  * @author youji.zj
  */
@@ -185,6 +187,7 @@ public class SimpleHttpCommandCenter implements CommandCenter {
             while (true) {
                 Socket socket = null;
                 try {
+                    // 监听请求，这种方式不能复用请求
                     socket = this.serverSocket.accept();
                     setSocketSoTimeout(socket);
                     HttpEventTask eventTask = new HttpEventTask(socket);
