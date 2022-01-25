@@ -26,6 +26,24 @@ import com.alibaba.csp.sentinel.util.function.Predicate;
 /**
  * Holds real-time statistics for resources.
  *
+ * Sentinel 里面的各种种类的统计节点：
+ *
+ * StatisticNode：最为基础的统计节点，包含秒级和分钟级两个滑动窗口结构。
+ * DefaultNode：链路节点，用于统计调用链路上某个资源的数据，维持树状结构。
+ * ClusterNode：簇点，用于统计每个资源全局的数据（不区分调用链路），以及存放该资源的按来源区分的调用数据（类型为 StatisticNode）。特别地，Constants.ENTRY_NODE 节点用于统计全局的入口资源数据。
+ * EntranceNode：入口节点，特殊的链路节点，对应某个 Context 入口的所有调用数据。Constants.ROOT 节点也是入口节点。
+ * 构建的时机：
+ *
+ * EntranceNode 在 ContextUtil.enter(xxx) 的时候就创建了，然后塞到 Context 里面。
+ * NodeSelectorSlot：根据 context 创建 DefaultNode，然后 set curNode to context。
+ * ClusterBuilderSlot：首先根据 resourceName 创建 ClusterNode，并且 set clusterNode to defaultNode；然后再根据 origin 创建来源节点（类型为 StatisticNode），并且 set originNode to curEntry。
+ * 几种 Node 的维度（数目）：
+ *
+ * ClusterNode 的维度是 resource
+ * DefaultNode 的维度是 resource * context，存在每个 NodeSelectorSlot 的 map 里面
+ * EntranceNode 的维度是 context，存在 ContextUtil 类的 contextNameNodeMap 里面
+ * 来源节点（类型为 StatisticNode）的维度是 resource * origin，存在每个 ClusterNode 的 originCountMap 里面
+ *
  * @author qinan.qn
  * @author leyou
  * @author Eric Zhao

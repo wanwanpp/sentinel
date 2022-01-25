@@ -37,6 +37,17 @@ import com.alibaba.csp.sentinel.slots.block.BlockException;
  * A processor slot that dedicates to real time statistics.
  * When entering this slot, we need to separately count the following
  * information:
+ *
+ * 根据规则判断结果进行相应的统计操作。
+ *
+ * entry 的时候：依次执行后面的判断 slot。每个 slot 触发流控的话会抛出异常（BlockException 的子类）。
+ * 若有 BlockException 抛出，则记录 block 数据；若无异常抛出则算作可通过（pass），记录 pass 数据。
+ *
+ * exit 的时候：若无 error（无论是业务异常还是流控异常），记录 complete（success）以及 RT，线程数-1。
+ *
+ * 记录数据的维度：线程数+1、记录当前 DefaultNode 数据、记录对应的 originNode 数据（若存在 origin）、
+ * 累计 IN 统计数据（若流量类型为 IN）。
+ *
  * <ul>
  * <li>{@link ClusterNode}: total statistics of a cluster node of the resource ID.</li>
  * <li>Origin node: statistics of a cluster node from different callers/origins.</li>
